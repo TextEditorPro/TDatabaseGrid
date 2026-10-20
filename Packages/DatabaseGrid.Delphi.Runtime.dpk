@@ -1,0 +1,73 @@
+package DatabaseGrid.Delphi.Runtime;
+
+{$R *.res}
+{$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
+{$ALIGN 8}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO OFF}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS OFF}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO OFF}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DEFINE RELEASE}
+{$ENDIF IMPLICITBUILDING}
+{$DESCRIPTION 'TDatabaseGrid control package - runtime'}
+{$LIBSUFFIX AUTO}
+{$RUNONLY}
+{$IMPLICITBUILD ON}
+
+requires
+  rtl,
+  vcl,
+  dbrtl;
+
+contains
+  DatabaseGrid in '..\Source\DatabaseGrid.pas',
+  DatabaseGrid.Border in '..\Source\DatabaseGrid.Border.pas',
+  DatabaseGrid.Clipboard in '..\Source\DatabaseGrid.Clipboard.pas',
+  DatabaseGrid.Editor in '..\Source\DatabaseGrid.Editor.pas',
+  DatabaseGrid.Editor.Popups in '..\Source\DatabaseGrid.Editor.Popups.pas',
+  DatabaseGrid.ColumnFilter in '..\Source\DatabaseGrid.ColumnFilter.pas',
+  DatabaseGrid.ColumnFilter.Popup in '..\Source\DatabaseGrid.ColumnFilter.Popup.pas',
+  DatabaseGrid.Colors in '..\Source\DatabaseGrid.Colors.pas',
+  DatabaseGrid.ColumnListDialog in '..\Source\DatabaseGrid.ColumnListDialog.pas',
+  DatabaseGrid.Columns in '..\Source\DatabaseGrid.Columns.pas',
+  DatabaseGrid.Consts in '..\Source\DatabaseGrid.Consts.pas',
+  DatabaseGrid.DataGrouping in '..\Source\DatabaseGrid.DataGrouping.pas',
+  DatabaseGrid.DataLink in '..\Source\DatabaseGrid.DataLink.pas',
+  DatabaseGrid.DataSetFeatures in '..\Source\DatabaseGrid.DataSetFeatures.pas',
+  DatabaseGrid.Export in '..\Source\DatabaseGrid.Export.pas',
+  DatabaseGrid.FieldValues in '..\Source\DatabaseGrid.FieldValues.pas',
+  DatabaseGrid.FilterController in '..\Source\DatabaseGrid.FilterController.pas',
+  DatabaseGrid.Footer in '..\Source\DatabaseGrid.Footer.pas',
+  DatabaseGrid.FooterCalculator in '..\Source\DatabaseGrid.FooterCalculator.pas',
+  DatabaseGrid.Glyphs in '..\Source\DatabaseGrid.Glyphs.pas',
+  DatabaseGrid.Groups in '..\Source\DatabaseGrid.Groups.pas',
+  DatabaseGrid.Indicator in '..\Source\DatabaseGrid.Indicator.pas',
+  DatabaseGrid.Language in '..\Source\DatabaseGrid.Language.pas',
+  DatabaseGrid.Layout in '..\Source\DatabaseGrid.Layout.pas',
+  DatabaseGrid.ListDataSet in '..\Source\DatabaseGrid.ListDataSet.pas',
+  DatabaseGrid.Painter in '..\Source\DatabaseGrid.Painter.pas',
+  DatabaseGrid.PopupForm in '..\Source\DatabaseGrid.PopupForm.pas',
+  DatabaseGrid.SearchPanel in '..\Source\DatabaseGrid.SearchPanel.pas',
+  DatabaseGrid.SearchPanel.Controls in '..\Source\DatabaseGrid.SearchPanel.Controls.pas',
+  DatabaseGrid.SelectedRows in '..\Source\DatabaseGrid.SelectedRows.pas',
+  DatabaseGrid.StyleHooks in '..\Source\DatabaseGrid.StyleHooks.pas',
+  DatabaseGrid.Title in '..\Source\DatabaseGrid.Title.pas',
+  DatabaseGrid.Types in '..\Source\DatabaseGrid.Types.pas';
+
+end.

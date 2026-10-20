@@ -1,0 +1,60 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{4513DBD3-AE67-4F5F-80A8-E6299D5E9A13}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="..\Packages\DatabaseGrid.Delphi.Runtime.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="..\Packages\DatabaseGrid.Delphi.Designtime.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="DatabaseGridDemo.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="DatabaseGrid_Delphi_Runtime">
+        <MSBuild Projects="..\Packages\DatabaseGrid.Delphi.Runtime.dproj"/>
+    </Target>
+    <Target Name="DatabaseGrid_Delphi_Runtime:Clean">
+        <MSBuild Projects="..\Packages\DatabaseGrid.Delphi.Runtime.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="DatabaseGrid_Delphi_Runtime:Make">
+        <MSBuild Projects="..\Packages\DatabaseGrid.Delphi.Runtime.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="DatabaseGrid_Delphi_Designtime">
+        <MSBuild Projects="..\Packages\DatabaseGrid.Delphi.Designtime.dproj"/>
+    </Target>
+    <Target Name="DatabaseGrid_Delphi_Designtime:Clean">
+        <MSBuild Projects="..\Packages\DatabaseGrid.Delphi.Designtime.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="DatabaseGrid_Delphi_Designtime:Make">
+        <MSBuild Projects="..\Packages\DatabaseGrid.Delphi.Designtime.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="DatabaseGridDemo">
+        <MSBuild Projects="DatabaseGridDemo.dproj"/>
+    </Target>
+    <Target Name="DatabaseGridDemo:Clean">
+        <MSBuild Projects="DatabaseGridDemo.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="DatabaseGridDemo:Make">
+        <MSBuild Projects="DatabaseGridDemo.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="DatabaseGrid_Delphi_Runtime;DatabaseGrid_Delphi_Designtime;DatabaseGridDemo"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="DatabaseGrid_Delphi_Runtime:Clean;DatabaseGrid_Delphi_Designtime:Clean;DatabaseGridDemo:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="DatabaseGrid_Delphi_Runtime:Make;DatabaseGrid_Delphi_Designtime:Make;DatabaseGridDemo:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>

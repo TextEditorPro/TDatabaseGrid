@@ -1,0 +1,48 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{8DCEA7E6-0EB9-44A4-A751-9AD931E72F9F}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="DatabaseGrid.Delphi.Runtime.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="DatabaseGrid.Delphi.Designtime.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="DatabaseGrid_Delphi_Runtime">
+        <MSBuild Projects="DatabaseGrid.Delphi.Runtime.dproj"/>
+    </Target>
+    <Target Name="DatabaseGrid_Delphi_Runtime:Clean">
+        <MSBuild Projects="DatabaseGrid.Delphi.Runtime.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="DatabaseGrid_Delphi_Runtime:Make">
+        <MSBuild Projects="DatabaseGrid.Delphi.Runtime.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="DatabaseGrid_Delphi_Designtime">
+        <MSBuild Projects="DatabaseGrid.Delphi.Designtime.dproj"/>
+    </Target>
+    <Target Name="DatabaseGrid_Delphi_Designtime:Clean">
+        <MSBuild Projects="DatabaseGrid.Delphi.Designtime.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="DatabaseGrid_Delphi_Designtime:Make">
+        <MSBuild Projects="DatabaseGrid.Delphi.Designtime.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="DatabaseGrid_Delphi_Runtime;DatabaseGrid_Delphi_Designtime"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="DatabaseGrid_Delphi_Runtime:Clean;DatabaseGrid_Delphi_Designtime:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="DatabaseGrid_Delphi_Runtime:Make;DatabaseGrid_Delphi_Designtime:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>
