@@ -4,7 +4,7 @@ A data-aware grid control for Delphi VCL.
 
 The development environment is RAD Studio 13+, older Delphi versions are not supported.
 
-![TDatabaseGrid showing a screenshot](https://github.com/TextEditorPro/TXMLGridView/blob/main/Assetts/screenshot.png)
+![TDatabaseGrid showing a screenshot](https://github.com/TextEditorPro/TDatabaseGrid/blob/main/Assetts/screenshot.png)
 
 ## Features
 
