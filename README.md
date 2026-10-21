@@ -4,6 +4,8 @@ A data-aware grid control for Delphi VCL.
 
 The development environment is RAD Studio 13+, older Delphi versions are not supported.
 
+![TDatabaseGrid showing a screenshot](Assetts\screenshot.png)
+
 ## Features
 
 - Border
@@ -42,6 +44,7 @@ The development environment is RAD Studio 13+, older Delphi versions are not sup
 - Memo text
 - Middle-click autoscroll
 - Record moving by dragging the indicator
+- Scrolling without moving the current record
 - Search panel
   - Combo box items with default item
   - Filter on typing
