@@ -254,7 +254,6 @@ type
     procedure EditorPopupClose(ASender: TObject; var AAction: TCloseAction);
     procedure EndEdit;
     procedure ExtendCellRange;
-    procedure FitColumnsToTitles;
     procedure GroupKeyDown(const AKey: Word; const AShift: TShiftState);
     procedure GroupsChanged(ASender: TObject);
     procedure GroupsExpandedChange(ASender: TObject; const ANode: TDatabaseGridGroupNode);
@@ -385,6 +384,7 @@ type
     procedure CopyToClipboard(const ACopyTitles: Boolean = True);
     procedure CutToClipboard;
     procedure EndUpdate;
+    procedure FitColumnsToTitles;
     procedure GetTabOrderList(AList: TList); override;
     procedure InvalidateDesignSelection;
     procedure InvertRowSelection;
