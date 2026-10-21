@@ -97,7 +97,7 @@ type
     procedure PaintEmptyRows(const ATop: Integer);
     procedure PaintFooter;
     procedure PaintGroupedRow(const ARow, ATop: Integer; const AActive: Boolean);
-    procedure PaintGroupRow(const ANode: TDatabaseGridGroupNode; const ATop: Integer; const AActive: Boolean);
+    procedure PaintGroupRow(const ANode: TDatabaseGridGroupNode; const ATop: Integer; const AActive, ATopLine: Boolean);
     procedure PaintImage(const AImages: TCustomImageList; const AImageIndex, AX, AY: Integer; const AClipRect: TRect);
     procedure PaintHighlightedText(const AClipRect: TRect; const ALeft, ATop: Integer; const AText: string; const AMatches: TArray<Boolean>; const AForeground: TColor);
     procedure PaintIndicatorBackground(const ARect: TRect; const ABackground, ABottomLine, ARightLine: TColor);
@@ -860,16 +860,16 @@ begin
   FDataLink.ActiveRecord := LGroupRow.RecordIndex;
 
   if Assigned(LGroupRow.Node) then
-    PaintGroupRow(LGroupRow.Node, ATop, AActive)
+    PaintGroupRow(LGroupRow.Node, ATop, AActive, (ARow > 0) and not Assigned(FGroups.Rows[ARow - 1].Node) and (FColors.HorizontalLine = TColors.SysNone))
   else
     PaintRow(ARow, ATop, AActive);
 end;
 
-procedure TDatabaseGridPainter.PaintGroupRow(const ANode: TDatabaseGridGroupNode; const ATop: Integer; const AActive: Boolean);
+procedure TDatabaseGridPainter.PaintGroupRow(const ANode: TDatabaseGridGroupNode; const ATop: Integer; const AActive, ATopLine: Boolean);
 var
   LBottom, LExpanderLeft, LGlyphTop, LHeight, LLeft: Integer;
   LCellState: TDatabaseGridDrawCellStates;
-  LExpanderColor: TColor;
+  LExpanderColor, LLineColor: TColor;
   LParams: TDatabaseGridDrawGroupRowParams;
   LRect: TRect;
 begin
@@ -877,6 +877,9 @@ begin
   LBottom := ATop + LHeight - 1;
   LExpanderLeft := FLayout.RowsLeft + ANode.Level * FLayout.GroupLevelWidth;
   LRect := Rect(LExpanderLeft, ATop, FState.ClientRect.Right, LBottom);
+
+  if ATopLine then
+    LRect.Top := ATop + 1;
 
   LParams.Background := FColors.GroupRowBackground;
   LParams.DefaultDrawing := True;
@@ -904,16 +907,20 @@ begin
   if Assigned(FState.DrawGroupRow) then
     CallDrawGroupRow(ANode, LRect, LCellState, LParams);
 
+  LLineColor := GetLineColor(FColors.GroupRowLine, FColors.GroupRowBackground);
+
   FillRectangle(Rect(FLayout.IndicatorWidth, ATop, LExpanderLeft, ATop + LHeight), FColors.GroupRowBackground);
   PaintLeftLine(ATop, ATop + LHeight, FColors.VerticalLine, FColors.GroupRowBackground);
-  FillRectangle(Rect(LExpanderLeft, LBottom, FState.ClientRect.Right, LBottom + 1),
-    GetLineColor(FColors.GroupRowLine, FColors.GroupRowBackground));
+  FillRectangle(Rect(LExpanderLeft, LBottom, FState.ClientRect.Right, LBottom + 1), LLineColor);
+
+  if ATopLine then
+    FillRectangle(Rect(LExpanderLeft, ATop, FState.ClientRect.Right, ATop + 1), LLineColor);
 
   if LParams.DefaultDrawing then
   begin
     FillRectangle(LRect, LParams.Background);
 
-    LGlyphTop := ATop + (LHeight - 1 - FLayout.GroupLevelWidth) div 2;
+    LGlyphTop := LRect.Top + (LRect.Height - FLayout.GroupLevelWidth) div 2;
 
     PaintDatabaseGridGlyph(FCanvas, Rect(LExpanderLeft, LGlyphTop, LExpanderLeft + FLayout.GroupLevelWidth,
       LGlyphTop + FLayout.GroupLevelWidth), if ANode.Expanded then glGroupExpanded else glGroupCollapsed, LExpanderColor);
@@ -922,7 +929,7 @@ begin
 
     if Assigned(FState.GroupImages) and (LParams.ImageIndex >= 0) then
     begin
-      FState.GroupImages.Draw(FCanvas, LLeft, ATop + (LHeight - 1 - FState.GroupImages.Height) div 2, LParams.ImageIndex,
+      FState.GroupImages.Draw(FCanvas, LLeft, LRect.Top + (LRect.Height - FState.GroupImages.Height) div 2, LParams.ImageIndex,
         dsTransparent, itImage);
 
       Inc(LLeft, FState.GroupImages.Width + FLayout.ScaleMetric(TDatabaseGridSize.ImageTextSpacing));
@@ -931,7 +938,7 @@ begin
     FCanvas.Font.Color := LParams.FontColor;
     FCanvas.Font.Style := LParams.FontStyle;
     FCanvas.Brush.Style := bsClear;
-    FCanvas.TextRect(Rect(LLeft, ATop, LRect.Right, LBottom), LLeft, ATop + (LHeight - 1 - FLayout.TextHeight) div 2,
+    FCanvas.TextRect(Rect(LLeft, LRect.Top, LRect.Right, LBottom), LLeft, LRect.Top + (LRect.Height - FLayout.TextHeight) div 2,
       LParams.Text);
     FCanvas.Brush.Style := bsSolid;
     FCanvas.Font.Style := FBaseFont.Style;

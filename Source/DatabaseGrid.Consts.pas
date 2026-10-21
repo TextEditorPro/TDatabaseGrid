@@ -59,8 +59,8 @@ type
     CurrentRowBackground = TColor($00FAF0E6);
     DesignHandle = TColor($00E8AE78);
     DesignHandleBorder = TColor($00B56B2D);
-    GroupRowBackground = TColor($00FCF7F2);
-    GroupRowLine = TColor($00DDD4CB);
+    GroupRowBackground = TColor($00F5F5F5);
+    GroupRowLine = TColor($00DADADA);
     ReadOnlyBackground = TColor($00F4F4F4);
     SearchMatchBackground = TColor($0080F0FF);
     SearchPanelBackgroundFocused = TColor($00FFE8CA);
