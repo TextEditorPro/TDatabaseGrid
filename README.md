@@ -15,6 +15,7 @@ The development environment is RAD Studio 13+, older Delphi versions are not sup
   - Editors: check box, date, date and time, time, ellipsis button, lookup, memo, pick list and text
   - Enter as Tab
   - Read-only columns
+  - Record delete confirmation
 - Check box row selection
   - Multi-select with Ctrl and Shift
   - Dragging scrolls and selects
@@ -26,6 +27,7 @@ The development environment is RAD Studio 13+, older Delphi versions are not sup
 - Column filters
   - Value list
   - Equals, contains, begins with, ends with, greater, less, between, empty and their opposites
+  - Popup menu: sort ascending, sort descending, clear sort, clear column filter and clear all column filters
 - Column images and image values
 - Column resize
 - Data grouping
@@ -39,6 +41,7 @@ The development environment is RAD Studio 13+, older Delphi versions are not sup
 - Hints for cut cell text
 - Indicator
   - Row indicator and check boxes
+  - Edit and insert state
   - Title menu: export, jump to column, selection and zoom
 - Jump to column
 - Memo text
@@ -51,6 +54,8 @@ The development environment is RAD Studio 13+, older Delphi versions are not sup
   - Highlight matches
   - Highlight on focus
   - Filter indication
+  - Refresh button
+  - Clear resets the combo box items
 - Sort marking
   - Multiple columns
 - Text overflow
@@ -67,6 +72,7 @@ The development environment is RAD Studio 13+, older Delphi versions are not sup
 
 - AlphaSkins (native) - https://www.alphaskins.com/
 - Devart Data Access Components (IBDAC, UniDAC, ...) - https://www.devart.com/dac.html
+- JEDI Visual Component Library (TJvMemoryData) - https://github.com/project-jedi/jvcl
 
 ## Defines
 
@@ -83,6 +89,7 @@ one, but a features class can do them on the server instead. Add the unit of you
 - `DatabaseGrid.DataSetFeatures.DAC` - Devart DAC datasets: sorting, column filter value lists and footer values on the server
 - `DatabaseGrid.DataSetFeatures.IBDAC` - IBDAC datasets (Firebird, InterBase): as DAC, plus search and column filters on the
   server
+- `DatabaseGrid.DataSetFeatures.JvMemoryData` - JVCL TJvMemoryData: sorting in memory, with one direction for all sort columns
 
 A DAC dataset that has not fetched all of its rows is sorted and filtered on the server: the grid adds an ORDER BY and a WHERE
 to the SQL and reopens the query, which fetches only the first rows. A dataset that has fetched all of its rows is sorted
