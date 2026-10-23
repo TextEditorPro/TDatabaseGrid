@@ -21,23 +21,24 @@ begin
   AImage := nil;
 
   LName := UpperCase(AClass.ClassName);
-  LSizedName := LName;
 
   if ASize >= 32 then
     LSizedName := LName + '32'
   else
   if ASize <= 16 then
-    LSizedName := LName + '16';
-
-  if FindResource(AModule, PChar(LSizedName), RT_BITMAP) = 0 then
+    LSizedName := LName + '16'
+  else
     LSizedName := LName;
 
-  if FindResource(AModule, PChar(LSizedName), RT_BITMAP) = 0 then
+  if FindResource(AModule, PChar(LSizedName), RT_BITMAP) <> 0 then
+    LName := LSizedName
+  else
+  if (LSizedName = LName) or (FindResource(AModule, PChar(LName), RT_BITMAP) = 0) then
     Exit(False);
 
   LBitmap := TBitmap.Create;
   try
-    LBitmap.LoadFromResourceName(AModule, LSizedName);
+    LBitmap.LoadFromResourceName(AModule, LName);
 
     if LBitmap.PixelFormat = pf32bit then
       LBitmap.AlphaFormat := afDefined
