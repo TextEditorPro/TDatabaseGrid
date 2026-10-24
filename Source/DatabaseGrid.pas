@@ -154,6 +154,7 @@ type
     function CanMoveRecords: Boolean;
     function CanRunSelectionCommand(const ACommand: TDatabaseGridTitleMenuCommand): Boolean;
     function CanSelectRows: Boolean;
+    function CanSortColumn(const AColumn: TDatabaseGridColumn): Boolean;
     function CreateMeasureBitmap: TBitmap;
     function EditorBeginModify: Boolean;
     function GetCurrentCellScreenRect: TRect;
@@ -351,6 +352,7 @@ type
     procedure ChangeScale(AMultiplier, ADivider: Integer; AIsDpiChange: Boolean); override;
     procedure CreateParams(var AParams: TCreateParams); override;
     procedure CreateWnd; override;
+    procedure DblClick; override;
     procedure KeyDown(var AKey: Word; AShift: TShiftState); override;
     procedure KeyPress(var AKey: Char); override;
     procedure MouseDown(AButton: TMouseButton; AShift: TShiftState; AX, AY: Integer); override;
@@ -767,6 +769,11 @@ begin
   Result := (dgoMultiSelect in FOptions) and (ioShowCheckBox in FIndicator.Options) and FDataLink.Active;
 end;
 
+function TCustomDatabaseGrid.CanSortColumn(const AColumn: TDatabaseGridColumn): Boolean;
+begin
+  Result := (dgoSortMarking in FOptions) and (toButton in AColumn.Title.Options);
+end;
+
 function TCustomDatabaseGrid.CreateMeasureBitmap: TBitmap;
 begin
   Result := TBitmap.Create;
@@ -1079,6 +1086,18 @@ begin
   inherited GetTabOrderList(AList);
 
   AList.Add(Self);
+end;
+
+procedure TCustomDatabaseGrid.DblClick;
+var
+  LPoint: TPoint;
+begin
+  LPoint := ScreenToClient(Mouse.CursorPos);
+
+  if GetAreaAt(LPoint.X, LPoint.Y) in [gaIndicatorTitle, gaTitle] then
+    Exit;
+
+  inherited DblClick;
 end;
 
 function TCustomDatabaseGrid.DoMouseWheel(AShift: TShiftState; AWheelDelta: Integer; AMousePos: TPoint): Boolean;
@@ -1783,7 +1802,7 @@ begin
   Result := Max(ACanvas.TextWidth(LParts[High(LParts)]), ACanvas.TextWidth(AColumn.Title.SubCaption)) +
     2 * FLayout.ScaleMetric(TDatabaseGridSize.CellPadding) + 1 + FLayout.GetTitleButtonsWidth(AColumn);
 
-  if (dgoSortMarking in FOptions) and (toButton in AColumn.Title.Options) then
+  if CanSortColumn(AColumn) then
     Inc(Result, FLayout.ScaleMetric(TDatabaseGridSize.SortMarkerWidth));
 
   if Assigned(FTitle.Images) and (AColumn.Title.ImageIndex >= 0) then
@@ -4608,7 +4627,7 @@ begin
     if (cfoShowValueList in LOptions) and FDataLink.Active then
       FFilterController.GetColumnValues(FDataLink.DataSet, AColumn, LValues, FColumnFilter.ValueListLimit);
 
-    FColumnFilterPopup := TDatabaseGridColumnFilterPopup.CreatePopup(Self, AColumn, LValues, Font, LOptions);
+    FColumnFilterPopup := TDatabaseGridColumnFilterPopup.CreatePopup(Self, AColumn, LValues, Font, LOptions, CanSortColumn(AColumn));
   finally
     LValues.Free;
   end;
@@ -4862,7 +4881,7 @@ begin
   if not (toButton in AColumn.Title.Options) then
     Exit;
 
-  if dgoSortMarking in FOptions then
+  if CanSortColumn(AColumn) then
     ChangeSortMarker(AColumn, ssCtrl in AShift);
 
   if Assigned(FOnTitleClick) then

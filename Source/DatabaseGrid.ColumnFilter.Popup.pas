@@ -43,6 +43,7 @@ type
     FColumn: TDatabaseGridColumn;
     FDragChecked: Boolean;
     FDragging: Boolean;
+    FMenuCommands: TArray<Integer>;
     FMenuList: TDatabaseGridPopupList;
     FOKButton: TDatabaseGridPopupButton;
     FOnClearAllColumnFilters: TNotifyEvent;
@@ -80,7 +81,7 @@ type
     procedure CreateParams(var AParams: TCreateParams); override;
   public
     constructor CreatePopup(const AOwner: TComponent; const AColumn: TDatabaseGridColumn; const AValues: TStrings;
-      const AFont: TFont; const AOptions: TDatabaseGridColumnFilterOptions);
+      const AFont: TFont; const AOptions: TDatabaseGridColumnFilterOptions; const ASortable: Boolean);
     destructor Destroy; override;
     procedure Popup(const APosition: TPoint);
     property ClosedByDeactivation: Boolean read FClosedByDeactivation;
@@ -171,12 +172,12 @@ end;
 { TDatabaseGridColumnFilterPopup }
 
 constructor TDatabaseGridColumnFilterPopup.CreatePopup(const AOwner: TComponent; const AColumn: TDatabaseGridColumn;
-  const AValues: TStrings; const AFont: TFont; const AOptions: TDatabaseGridColumnFilterOptions);
+  const AValues: TStrings; const AFont: TFont; const AOptions: TDatabaseGridColumnFilterOptions; const ASortable: Boolean);
 const
   MENU_CAPTIONS: array [0..MENU_ITEM_COUNT - 1] of Pointer = (@SDatabaseGridSortAscending, @SDatabaseGridSortDescending,
     @SDatabaseGridClearSort, nil, @SDatabaseGridColumnFilter, @SDatabaseGridClearColumnFilter, @SDatabaseGridClearAllColumnFilters);
 var
-  LButtonHeight, LButtonWidth, LControlHeight, LMargin, LTop: Integer;
+  LButtonHeight, LButtonWidth, LControlHeight, LMargin, LMenuHeight, LTop: Integer;
 begin
   inherited CreateNew(AOwner);
 
@@ -206,22 +207,34 @@ begin
   LButtonHeight := Scale(25);
   LButtonWidth := Scale(75);
 
+  for var LCommand := 0 to MENU_ITEM_COUNT - 1 do
+  if ASortable or (LCommand > MENU_SEPARATOR) then
+    FMenuCommands := FMenuCommands + [LCommand];
+
+  LMenuHeight := 0;
+
+  for var LCommand in FMenuCommands do
+  if LCommand = MENU_SEPARATOR then
+    Inc(LMenuHeight, Scale(TDatabaseGridSize.MenuSeparatorHeight))
+  else
+    Inc(LMenuHeight, LControlHeight);
+
   FMenuList := TDatabaseGridPopupList.Create(Self);
   FMenuList.Parent := Self;
   FMenuList.Anchors := [akLeft, akTop, akRight];
   FMenuList.BorderStyle := bsNone;
   FMenuList.Style := lbOwnerDrawVariable;
   FMenuList.ItemHeight := LControlHeight;
-  FMenuList.SetBounds(0, Scale(2), ClientWidth, (MENU_ITEM_COUNT - 1) * LControlHeight + Scale(TDatabaseGridSize.MenuSeparatorHeight));
+  FMenuList.SetBounds(0, Scale(2), ClientWidth, LMenuHeight);
   FMenuList.OnClick := MenuListClick;
   FMenuList.OnDrawItem := MenuListDrawItem;
   FMenuList.OnMeasureItem := MenuListMeasureItem;
   FMenuList.OnMouseLeave := MenuListMouseLeave;
   FMenuList.OnMouseMove := MenuListMouseMove;
 
-  for var LIndex := 0 to MENU_ITEM_COUNT - 1 do
-  if Assigned(MENU_CAPTIONS[LIndex]) then
-    FMenuList.Items.Add(LoadResString(MENU_CAPTIONS[LIndex]))
+  for var LCommand in FMenuCommands do
+  if Assigned(MENU_CAPTIONS[LCommand]) then
+    FMenuList.Items.Add(LoadResString(MENU_CAPTIONS[LCommand]))
   else
     FMenuList.Items.Add('-');
 
@@ -405,7 +418,10 @@ end;
 
 procedure TDatabaseGridColumnFilterPopup.MenuListClick(ASender: TObject);
 begin
-  case FMenuList.ItemIndex of
+  if FMenuList.ItemIndex < 0 then
+    Exit;
+
+  case FMenuCommands[FMenuList.ItemIndex] of
     MENU_SORT_ASCENDING:
       if Assigned(FOnSort) then
         FOnSort(Self, FColumn, TDatabaseGridSortMarker.smAscending);
@@ -442,7 +458,7 @@ var
 begin
   LCanvas := (AControl as TDatabaseGridPopupListBox).Canvas;
 
-  if AIndex = MENU_SEPARATOR then
+  if FMenuCommands[AIndex] = MENU_SEPARATOR then
   begin
     LCanvas.Brush.Color := Color;
     LCanvas.FillRect(ARect);
@@ -472,12 +488,12 @@ begin
   LCanvas.TextRect(Rect(LGlyphRect.Right, ARect.Top, ARect.Right, ARect.Bottom), LGlyphRect.Right + Scale(8),
     ARect.Top + (ARect.Height - LCanvas.TextHeight('Wg')) div 2, FMenuList.Items[AIndex]);
 
-  PaintDatabaseGridGlyph(LCanvas, LGlyphRect, MENU_GLYPHS[AIndex], LCanvas.Font.Color);
+  PaintDatabaseGridGlyph(LCanvas, LGlyphRect, MENU_GLYPHS[FMenuCommands[AIndex]], LCanvas.Font.Color);
 end;
 
 procedure TDatabaseGridColumnFilterPopup.MenuListMeasureItem(AControl: TWinControl; AIndex: Integer; var AHeight: Integer);
 begin
-  if AIndex = MENU_SEPARATOR then
+  if FMenuCommands[AIndex] = MENU_SEPARATOR then
     AHeight := Scale(TDatabaseGridSize.MenuSeparatorHeight);
 end;
 
@@ -492,7 +508,7 @@ var
 begin
   LIndex := FMenuList.ItemAtPos(Point(AX, AY), True);
 
-  if LIndex = MENU_SEPARATOR then
+  if (LIndex >= 0) and (FMenuCommands[LIndex] = MENU_SEPARATOR) then
     LIndex := -1;
 
   if LIndex <> FMenuList.ItemIndex then
