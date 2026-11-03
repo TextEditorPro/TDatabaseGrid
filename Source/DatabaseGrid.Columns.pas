@@ -140,6 +140,7 @@ type
     function GetImageIndex: Integer;
     procedure Assign(ASource: TPersistent); override;
     procedure FilterChanged;
+    procedure SetOption(const AOption: TDatabaseGridColumnOption; const AEnabled: Boolean);
     property Field: TField read FField write FField;
     property Filter: TDatabaseGridColumnFilterCondition read FFilter;
   published
@@ -616,6 +617,14 @@ begin
 
   if Assigned(Collection) and Assigned((Collection as TDatabaseGridColumns).OnFilterChange) then
     (Collection as TDatabaseGridColumns).OnFilterChange(Self);
+end;
+
+procedure TDatabaseGridColumn.SetOption(const AOption: TDatabaseGridColumnOption; const AEnabled: Boolean);
+begin
+  if AEnabled then
+    Include(FOptions, AOption)
+  else
+    Exclude(FOptions, AOption);
 end;
 
 function TDatabaseGridColumn.GetEditorKind: TDatabaseGridEditorKind;
