@@ -55,7 +55,7 @@ implementation
 {$R *.dfm}
 
 uses
-  Winapi.Windows, System.UITypes, DatabaseGridDemo.Images;
+  System.UITypes, DatabaseGridDemo.Images;
 
 const
   DEMO_GROUP_IMAGE_CITY = 1;
@@ -172,13 +172,7 @@ begin
 end;
 
 procedure TFrameDataGrouping.DatabaseGridZoomChange(ASender: TObject);
-var
-  LSize: Integer;
 begin
-  LSize := MulDiv(DEMO_IMAGE_DESIGN_SIZE, DatabaseGrid.CurrentPPI * DatabaseGrid.ZoomPercentage, USER_DEFAULT_SCREEN_DPI * 100);
-
-  GroupImageList.SetSize(LSize, LSize);
-
   UpdateZoomButton;
 end;
 

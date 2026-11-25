@@ -59,7 +59,7 @@ implementation
 {$R *.dfm}
 
 uses
-  Winapi.Windows, System.UITypes, System.Variants, DatabaseGrid.Colors, DatabaseGrid.DataSetFeatures.ClientDataSet, DatabaseGridDemo.Images;
+  System.UITypes, System.Variants, DatabaseGrid.Colors, DatabaseGrid.DataSetFeatures.ClientDataSet, DatabaseGridDemo.Images;
 
 const
   DEMO_CITIES: array [0..4] of string = ('Helsinki', 'Tampere', 'Turku', 'Oulu', 'Kuopio');
@@ -189,13 +189,7 @@ begin
 end;
 
 procedure TFrameCustomers.DatabaseGridZoomChange(ASender: TObject);
-var
-  LSize: Integer;
 begin
-  LSize := MulDiv(DEMO_IMAGE_DESIGN_SIZE, DatabaseGrid.CurrentPPI * DatabaseGrid.ZoomPercentage, USER_DEFAULT_SCREEN_DPI * 100);
-
-  StatusImageList.SetSize(LSize, LSize);
-
   UpdateZoomButton;
 end;
 

@@ -856,7 +856,7 @@ var
 
     if Assigned(AColumn.Images) and (LParams.ImageIndex >= 0) then
     begin
-      Inc(Result, AColumn.Images.Width);
+      Inc(Result, FLayout.ZoomedImages.GetWidth(AColumn.Images));
 
       if not (coShowImageAndText in AColumn.Options) then
         Exit;
@@ -1806,7 +1806,7 @@ begin
     Inc(Result, FLayout.ScaleMetric(TDatabaseGridSize.SortMarkerWidth));
 
   if Assigned(FTitle.Images) and (AColumn.Title.ImageIndex >= 0) then
-    Inc(Result, FTitle.Images.Width + FLayout.ScaleMetric(TDatabaseGridSize.ImageTextSpacing));
+    Inc(Result, FLayout.ZoomedImages.GetWidth(FTitle.Images) + FLayout.ScaleMetric(TDatabaseGridSize.ImageTextSpacing));
 end;
 
 function TCustomDatabaseGrid.MoveRowBy(const ADistance: Integer): Boolean;

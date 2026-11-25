@@ -4,7 +4,7 @@ interface
 
 uses
   Winapi.Windows, System.Classes, System.Types, Vcl.Graphics, DatabaseGrid.ColumnFilter, DatabaseGrid.Columns, DatabaseGrid.Indicator,
-  DatabaseGrid.Title, DatabaseGrid.Types;
+  DatabaseGrid.Title, DatabaseGrid.Types, DatabaseGrid.ZoomedImages;
 
 type
   TDatabaseGridLayout = class(TObject)
@@ -49,6 +49,7 @@ type
     FTitleLineCount: Integer;
     FTitleTop: Integer;
     FVisibleRowCount: Integer;
+    FZoomedImages: TDatabaseGridZoomedImages;
     FZoomPercentage: Integer;
     function GetColumnsLeft: Integer;
     function GetColumnsRight: Integer;
@@ -118,6 +119,7 @@ type
     property VisibleColumnCount: Integer read GetVisibleColumnCount;
     property VisibleColumns[const AIndex: Integer]: TDatabaseGridColumn read GetVisibleColumn;
     property VisibleRowCount: Integer read FVisibleRowCount;
+    property ZoomedImages: TDatabaseGridZoomedImages read FZoomedImages;
   end;
 
 implementation
@@ -137,12 +139,14 @@ begin
   FPixelsPerInch := USER_DEFAULT_SCREEN_DPI;
   FTitleLevelCount := 1;
   FTitleLineCount := 1;
+  FZoomedImages := TDatabaseGridZoomedImages.Create(nil);
   FZoomPercentage := TDatabaseGridDefault.ZoomPercentage;
 end;
 
 destructor TDatabaseGridLayout.Destroy;
 begin
   FMeasureBitmap.Free;
+  FZoomedImages.Free;
 
   inherited Destroy;
 end;
@@ -581,6 +585,7 @@ var
 begin
   FPixelsPerInch := APixelsPerInch;
   FZoomPercentage := AZoomPercentage;
+  FZoomedImages.ZoomPercentage := FZoomPercentage;
   FFontHeight := MulDiv(AFont.Height, FZoomPercentage, 100);
   FSortNumberFontHeight := -MulDiv(DATABASE_GRID_SORT_NUMBER_FONT_SIZE, FPixelsPerInch * FZoomPercentage, 72 * 100);
 

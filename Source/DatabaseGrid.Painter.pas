@@ -532,10 +532,12 @@ var
   LCell: TDatabaseGridPaintCell;
   LClipRect: TRect;
   LImages: TCustomImageList;
-  LLeft, LPadding: Integer;
+  LImageTop, LImageWidth, LLeft, LPadding: Integer;
 begin
   LCell := FCells[AIndex];
   LImages := LCell.Column.Images;
+  LImageTop := LCell.Rect.Top + (LCell.Rect.Height - 1 - FLayout.ZoomedImages.GetHeight(LImages)) div 2;
+  LImageWidth := FLayout.ZoomedImages.GetWidth(LImages);
   LPadding := FLayout.ScaleMetric(TDatabaseGridSize.CellPadding);
   LClipRect := Rect(Max(LCell.Rect.Left, FLayout.DataLeft), LCell.Rect.Top, LCell.Rect.Right - 1, LCell.Rect.Bottom - 1);
 
@@ -544,20 +546,19 @@ begin
 
   if not (coShowImageAndText in LCell.Column.Options) then
   begin
-    PaintImage(LImages, LCell.Params.ImageIndex, LCell.Rect.Left + (LCell.Rect.Width - 1 - LImages.Width) div 2,
-      LCell.Rect.Top + (LCell.Rect.Height - 1 - LImages.Height) div 2, LClipRect);
+    PaintImage(LImages, LCell.Params.ImageIndex, LCell.Rect.Left + (LCell.Rect.Width - 1 - LImageWidth) div 2, LImageTop, LClipRect);
 
     Exit;
   end;
 
   LLeft := LCell.Rect.Left + LPadding;
 
-  PaintImage(LImages, LCell.Params.ImageIndex, LLeft, LCell.Rect.Top + (LCell.Rect.Height - 1 - LImages.Height) div 2, LClipRect);
+  PaintImage(LImages, LCell.Params.ImageIndex, LLeft, LImageTop, LClipRect);
 
   FCanvas.Font.Color := LCell.Params.FontColor;
   FCanvas.Font.Style := LCell.Params.FontStyle;
   FCanvas.Brush.Style := bsClear;
-  FCanvas.TextRect(LClipRect, LLeft + LImages.Width + FLayout.ScaleMetric(TDatabaseGridSize.ImageTextSpacing),
+  FCanvas.TextRect(LClipRect, LLeft + LImageWidth +FLayout.ScaleMetric(TDatabaseGridSize.ImageTextSpacing),
     LCell.Rect.Top + (LCell.Rect.Height - 1 - FLayout.TextHeight) div 2, LCell.Params.Text);
   FCanvas.Brush.Style := bsSolid;
 end;
@@ -929,10 +930,10 @@ begin
 
     if Assigned(FState.GroupImages) and (LParams.ImageIndex >= 0) then
     begin
-      FState.GroupImages.Draw(FCanvas, LLeft, LRect.Top + (LRect.Height - FState.GroupImages.Height) div 2, LParams.ImageIndex,
-        dsTransparent, itImage);
+      FLayout.ZoomedImages.Draw(FCanvas, FState.GroupImages, LParams.ImageIndex, LLeft,
+        LRect.Top + (LRect.Height - FLayout.ZoomedImages.GetHeight(FState.GroupImages)) div 2);
 
-      Inc(LLeft, FState.GroupImages.Width + FLayout.ScaleMetric(TDatabaseGridSize.ImageTextSpacing));
+      Inc(LLeft, FLayout.ZoomedImages.GetWidth(FState.GroupImages) + FLayout.ScaleMetric(TDatabaseGridSize.ImageTextSpacing));
     end;
 
     FCanvas.Font.Color := LParams.FontColor;
@@ -1020,7 +1021,7 @@ begin
   try
     IntersectClipRect(FCanvas.Handle, AClipRect.Left, AClipRect.Top, AClipRect.Right, AClipRect.Bottom);
 
-    AImages.Draw(FCanvas, AX, AY, AImageIndex, dsTransparent, itImage);
+    FLayout.ZoomedImages.Draw(FCanvas, AImages, AImageIndex, AX, AY);
   finally
     RestoreDC(FCanvas.Handle, LSavedDC);
   end;
@@ -1321,7 +1322,7 @@ var
 
 var
   LLastColumn: Boolean;
-  LButtonPadding, LButtonWidth, LFontHeight, LIconPadding, LImageIndex, LImageTop, LRight, LSortMarkerWidth, LSortNumberWidth: Integer;
+  LButtonPadding, LButtonWidth, LFontHeight, LIconPadding, LImageIndex, LImageTop, LImageWidth, LRight, LSortMarkerWidth, LSortNumberWidth: Integer;
   LClipRect, LGlyphRect: TRect;
   LSortNumber: string;
 begin
@@ -1373,18 +1374,19 @@ begin
       PaintTitleCell(0, LLastColumn)
     else
     begin
-      LImageTop := LRect.Top + (LRect.Height - 1 - FState.TitleImages.Height) div 2;
+      LImageTop := LRect.Top + (LRect.Height - 1 - FLayout.ZoomedImages.GetHeight(FState.TitleImages)) div 2;
+      LImageWidth := FLayout.ZoomedImages.GetWidth(FState.TitleImages);
       LClipRect := Rect(Max(LRect.Left, FLayout.DataLeft), LRect.Top, LRect.Right - 1 - LRightIndent, LRect.Bottom - 1);
 
       if toShowImageAndText in LColumn.Title.Options then
       begin
-        PaintTitleCell(FState.TitleImages.Width + FLayout.ScaleMetric(TDatabaseGridSize.ImageTextSpacing), LLastColumn);
+        PaintTitleCell(LImageWidth + FLayout.ScaleMetric(TDatabaseGridSize.ImageTextSpacing), LLastColumn);
         PaintImage(FState.TitleImages, LImageIndex, LRect.Left + FLayout.ScaleMetric(TDatabaseGridSize.CellPadding), LImageTop, LClipRect);
       end
       else
       begin
         PaintCell(LRect, '', LColumn.Title.Alignment, LBackground, FColors.TitleForeground, FColors.TitleBottomLine, LVerticalLine, LRightIndent, 0, LLastColumn);
-        PaintImage(FState.TitleImages, LImageIndex, LRect.Left + (LRect.Width - 1 - LRightIndent - FState.TitleImages.Width) div 2, LImageTop, LClipRect);
+        PaintImage(FState.TitleImages, LImageIndex, LRect.Left + (LRect.Width - 1 - LRightIndent - LImageWidth) div 2, LImageTop, LClipRect);
       end;
     end;
 

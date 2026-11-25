@@ -127,6 +127,7 @@
         </DelphiCompile>
         <DCCReference Include="rtl.dcp"/>
         <DCCReference Include="vcl.dcp"/>
+        <DCCReference Include="vclwinx.dcp"/>
         <DCCReference Include="dbrtl.dcp"/>
         <DCCReference Include="..\Source\DatabaseGrid.pas"/>
         <DCCReference Include="..\Source\DatabaseGrid.Border.pas"/>
@@ -161,6 +162,7 @@
         <DCCReference Include="..\Source\DatabaseGrid.StyleHooks.pas"/>
         <DCCReference Include="..\Source\DatabaseGrid.Title.pas"/>
         <DCCReference Include="..\Source\DatabaseGrid.Types.pas"/>
+        <DCCReference Include="..\Source\DatabaseGrid.ZoomedImages.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

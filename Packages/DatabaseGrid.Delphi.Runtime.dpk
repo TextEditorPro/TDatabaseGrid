@@ -33,6 +33,7 @@ package DatabaseGrid.Delphi.Runtime;
 requires
   rtl,
   vcl,
+  vclwinx,
   dbrtl;
 
 contains
@@ -68,6 +69,7 @@ contains
   DatabaseGrid.SelectedRows in '..\Source\DatabaseGrid.SelectedRows.pas',
   DatabaseGrid.StyleHooks in '..\Source\DatabaseGrid.StyleHooks.pas',
   DatabaseGrid.Title in '..\Source\DatabaseGrid.Title.pas',
-  DatabaseGrid.Types in '..\Source\DatabaseGrid.Types.pas';
+  DatabaseGrid.Types in '..\Source\DatabaseGrid.Types.pas',
+  DatabaseGrid.ZoomedImages in '..\Source\DatabaseGrid.ZoomedImages.pas';
 
 end.
