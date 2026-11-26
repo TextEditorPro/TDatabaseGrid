@@ -25,6 +25,7 @@ type
     FDataRect: TRect;
     FDataTop: Integer;
     FFontHeight: Integer;
+    FFontStyle: TFontStyles;
     FFooterHeight: Integer;
     FFooterVisible: Boolean;
     FGroupIndent: Integer;
@@ -125,7 +126,7 @@ type
 implementation
 
 uses
-  System.Math, System.SysUtils, DatabaseGrid.Consts;
+  System.Math, System.SysUtils, System.UITypes, DatabaseGrid.Consts;
 
 constructor TDatabaseGridLayout.Create(const AColumnFilter: TDatabaseGridColumnFilter; const AIndicator: TDatabaseGridIndicator;
   const ATitle: TDatabaseGridTitle);
@@ -466,7 +467,11 @@ begin
     LParts := FColumnPlaces[LIndex].TitleParts;
 
     if toWordWrap in LColumn.Title.Options then
-      FColumnPlaces[LIndex].TitleLines := WrapTitle(LParts[High(LParts)], GetTitleTextWidth(LIndex))
+    begin
+      FMeasureBitmap.Canvas.Font.Style := FFontStyle + LColumn.Title.FontStyle;
+
+      FColumnPlaces[LIndex].TitleLines := WrapTitle(LParts[High(LParts)], GetTitleTextWidth(LIndex));
+    end
     else
       FColumnPlaces[LIndex].TitleLines := [LParts[High(LParts)]];
 
@@ -587,6 +592,7 @@ begin
   FZoomPercentage := AZoomPercentage;
   FZoomedImages.ZoomPercentage := FZoomPercentage;
   FFontHeight := MulDiv(AFont.Height, FZoomPercentage, 100);
+  FFontStyle := AFont.Style;
   FSortNumberFontHeight := -MulDiv(DATABASE_GRID_SORT_NUMBER_FONT_SIZE, FPixelsPerInch * FZoomPercentage, 72 * 100);
 
   LBitmap := TBitmap.Create;

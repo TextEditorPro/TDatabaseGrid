@@ -1287,11 +1287,16 @@ var
   procedure PaintTitleCell(const ALeftIndent: Integer; const ALastColumn: Boolean);
   var
     LLineClipRect, LTextClipRect, LTextRect: TRect;
+    LSubCaptionLine: Boolean;
     LTop: Integer;
   begin
     if FLayout.TitleLineCount = 1 then
     begin
+      FCanvas.Font.Style := FBaseFont.Style + LColumn.Title.FontStyle;
+
       PaintCell(LRect, LLines[0], LColumn.Title.Alignment, LBackground, FColors.TitleForeground, FColors.TitleBottomLine, LVerticalLine, LRightIndent, ALeftIndent, ALastColumn);
+
+      FCanvas.Font.Style := FBaseFont.Style;
 
       Exit;
     end;
@@ -1313,11 +1318,15 @@ var
         LLineClipRect.Top := LLineClipRect.Bottom;
 
       LLineClipRect.Bottom := if LLine = High(LLines) then LTextClipRect.Bottom else LTop + (LLine + 1) * FLayout.TextHeight;
+      LSubCaptionLine := not LColumn.Title.SubCaption.IsEmpty and (LLine = High(LLines));
+
+      FCanvas.Font.Style := if LSubCaptionLine then FBaseFont.Style else FBaseFont.Style + LColumn.Title.FontStyle;
 
       PaintTextLine(LLineClipRect, LTextRect, LLines[LLine], LColumn.Title.Alignment, LTop + LLine * FLayout.TextHeight, LBackground,
-        if not LColumn.Title.SubCaption.IsEmpty and (LLine = High(LLines)) then FColors.TitleSubCaptionForeground
-        else FColors.TitleForeground);
+        if LSubCaptionLine then FColors.TitleSubCaptionForeground else FColors.TitleForeground);
     end;
+
+    FCanvas.Font.Style := FBaseFont.Style;
   end;
 
 var

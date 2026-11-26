@@ -1796,10 +1796,18 @@ end;
 
 function TCustomDatabaseGrid.MeasureTitleWidth(const ACanvas: TCanvas; const AColumn: TDatabaseGridColumn): Integer;
 var
+  LCaptionWidth: Integer;
+  LFontStyle: TFontStyles;
   LParts: TArray<string>;
 begin
   LParts := AColumn.Title.GetCaptionParts;
-  Result := Max(ACanvas.TextWidth(LParts[High(LParts)]), ACanvas.TextWidth(AColumn.Title.SubCaption)) +
+  LFontStyle := ACanvas.Font.Style;
+
+  ACanvas.Font.Style := LFontStyle + AColumn.Title.FontStyle;
+  LCaptionWidth := ACanvas.TextWidth(LParts[High(LParts)]);
+  ACanvas.Font.Style := LFontStyle;
+
+  Result := Max(LCaptionWidth, ACanvas.TextWidth(AColumn.Title.SubCaption)) +
     2 * FLayout.ScaleMetric(TDatabaseGridSize.CellPadding) + 1 + FLayout.GetTitleButtonsWidth(AColumn);
 
   if CanSortColumn(AColumn) then

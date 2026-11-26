@@ -68,6 +68,7 @@ type
     FAlignment: TAlignment;
     FCaption: string;
     FColumn: TDatabaseGridColumn;
+    FFontStyle: TFontStyles;
     FHint: string;
     FImageIndex: System.UITypes.TImageIndex;
     FOptions: TDatabaseGridTitleOptions;
@@ -77,6 +78,7 @@ type
     function GetDisplayCaption: string;
     procedure SetAlignment(const AValue: TAlignment);
     procedure SetCaption(const AValue: string);
+    procedure SetFontStyle(const AValue: TFontStyles);
     procedure SetImageIndex(const AValue: System.UITypes.TImageIndex);
     procedure SetOptions(const AValue: TDatabaseGridTitleOptions);
     procedure SetSortMarker(const AValue: TDatabaseGridSortMarker);
@@ -91,6 +93,7 @@ type
   published
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property Caption: string read FCaption write SetCaption;
+    property FontStyle: TFontStyles read FFontStyle write SetFontStyle default [];
     property Hint: string read FHint write FHint;
     property ImageIndex: System.UITypes.TImageIndex read FImageIndex write SetImageIndex default -1;
     property Options: TDatabaseGridTitleOptions read FOptions write SetOptions default TDatabaseGridDefault.TitleOptions;
@@ -455,6 +458,7 @@ begin
   begin
     Self.FAlignment := FAlignment;
     Self.FCaption := FCaption;
+    Self.FFontStyle := FFontStyle;
     Self.FHint := FHint;
     Self.FImageIndex := FImageIndex;
     Self.FOptions := FOptions;
@@ -511,6 +515,16 @@ begin
   if FCaption <> AValue then
   begin
     FCaption := AValue;
+
+    FColumn.Changed(False);
+  end;
+end;
+
+procedure TDatabaseGridColumnTitle.SetFontStyle(const AValue: TFontStyles);
+begin
+  if FFontStyle <> AValue then
+  begin
+    FFontStyle := AValue;
 
     FColumn.Changed(False);
   end;
